@@ -1,0 +1,33 @@
+# models:
+#   - model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/kanana-1.5-8b-instruct-2505-lora-20250715-1532
+#     parameters:
+#       density: 0.3
+#       weight: [0, 0.1, 0.2]  # weight gradient
+#   - model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/kanana-1.5-8b-instruct-2505-lora-20250724-1553
+#     parameters:
+#       density: 0.3
+#       weight: [0, 0.1, 0.2] # weight gradient      
+# merge_method: ties
+# base_model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/kanana-1.5-8b-instruct-2505-lora-20250716-1805
+# parameters:
+#   normalize: true
+#   int8_mask: true
+# dtype: bfloat16
+
+
+slices:
+  - sources:
+      - model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/0725_5-merge-69.94
+        layer_range: [0, 32] #레이어 개수에 따라서 설정
+      - model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/0727/KRAG-kanana-1.5-8b-instruct-2505-merge-70.57
+        layer_range: [0, 32] #레이어 개수에 따라서 설정
+merge_method: slerp #병합 방법 중 slerp 방법론 활용
+base_model: /home/infidea/rebirth-hjun/KRAG_2025/modle_merge/0725_5-merge-69.94 #기본 모델 설정
+parameters:
+  t:
+    - filter: self_attn #어텐션 스코어 가중치
+      value: [0, 0.5, 0.7, 0.9, 1] # 가능한 조합들
+    - filter: mlp #최종 분류 로짓값 가중치
+      value: [1, 0.5, 0.7, 0.5, 0]
+    - value: 0.9 # 기본 모델이 얼마나 가중치를 가질 것인지
+dtype: bfloat16 #저장된 가중치 dtype
